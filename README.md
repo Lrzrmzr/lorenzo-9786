@@ -6,12 +6,12 @@ Aplicación web con temática de apuestas en carreras de caracoles. Permite regi
 
 ## Stack
 
-| Capa | Tecnología |
-|---|---|
-| Frontend | React + Vite + TypeScript |
-| Backend | Express + TypeScript |
+| Capa         | Tecnología                      |
+| ------------ | ------------------------------- |
+| Frontend     | React + Vite + TypeScript       |
+| Backend      | Express + TypeScript            |
 | Persistencia | LocalStorage (simulación local) |
-| Monorepo | pnpm workspaces |
+| Monorepo     | pnpm workspaces                 |
 
 ## Estructura
 
