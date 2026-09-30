@@ -7,7 +7,7 @@ describe('loadConfig', () => {
       nodeEnv: 'development',
       port: 3001,
       clientOrigins: ['http://localhost:5173'],
-      snailpay: { forceOutage: false, timeoutDelayMs: 15_000 },
+      snailpay: { forceOutage: false, timeoutDelayMs: 15_000, rateLimitPerMinute: 20 },
     })
   })
 
@@ -18,13 +18,14 @@ describe('loadConfig', () => {
       CLIENT_ORIGIN: 'https://app.example.com, http://localhost:5173',
       SNAILPAY_FORCE_OUTAGE: 'true',
       SNAILPAY_TIMEOUT_DELAY_MS: '500',
+      PAYMENT_RATE_LIMIT_PER_MINUTE: '5',
     })
 
     expect(config).toEqual({
       nodeEnv: 'production',
       port: 8080,
       clientOrigins: ['https://app.example.com', 'http://localhost:5173'],
-      snailpay: { forceOutage: true, timeoutDelayMs: 500 },
+      snailpay: { forceOutage: true, timeoutDelayMs: 500, rateLimitPerMinute: 5 },
     })
   })
 
@@ -44,6 +45,7 @@ describe('loadConfig', () => {
     ['CLIENT_ORIGIN', 'no-es-una-url'],
     ['SNAILPAY_FORCE_OUTAGE', 'quizas'],
     ['SNAILPAY_TIMEOUT_DELAY_MS', '-1'],
+    ['PAYMENT_RATE_LIMIT_PER_MINUTE', '0'],
   ])('rechaza %s=%s e indica la variable en el mensaje', (name, value) => {
     expect(() => loadConfig({ [name]: value })).toThrow(name)
   })

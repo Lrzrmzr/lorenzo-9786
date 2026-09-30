@@ -6,15 +6,18 @@ import { createFixedClock } from './config/clock'
 import { loadConfig } from './config/env'
 import { silentLogger, type Logger } from './lib/logger'
 import { errorHandler } from './middleware/error-handler'
+import { InMemoryIdempotencyStore } from './repositories/idempotency.store'
 
 const FIXED_NOW = new Date('2026-09-29T12:00:00.000Z')
 const ALLOWED_ORIGIN = 'http://localhost:5173'
 
 function buildApp() {
+  const clock = createFixedClock(FIXED_NOW)
   return createApp({
     config: loadConfig({ NODE_ENV: 'test', CLIENT_ORIGIN: ALLOWED_ORIGIN }),
-    clock: createFixedClock(FIXED_NOW),
+    clock,
     logger: silentLogger,
+    idempotencyStore: new InMemoryIdempotencyStore(clock),
   })
 }
 
