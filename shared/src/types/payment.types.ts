@@ -16,7 +16,6 @@ export type RejectedStatusDetail =
   | 'insufficient_funds'
   | 'card_reported_lost'
   | 'high_risk_blocked'
-  | 'amount_exceeds_limit'
   | 'card_not_recognized'
   | 'idempotency_key_mismatch'
 
@@ -24,8 +23,11 @@ export type ErrorStatusDetail = 'service_unavailable' | 'gateway_timeout'
 
 export type PaymentStatusDetail = ApprovedStatusDetail | RejectedStatusDetail | ErrorStatusDetail
 
-/** Errores de validación por campo; solo se envían con `status_detail: invalid_request`. */
-export type PaymentFieldErrors = Partial<Record<keyof PaymentRequest, string[]>>
+/**
+ * Errores de validación por campo; solo se envían con `status_detail: invalid_request`.
+ * `idempotency_key` corresponde al encabezado `Idempotency-Key`, no al cuerpo.
+ */
+export type PaymentFieldErrors = Partial<Record<keyof PaymentRequest | 'idempotency_key', string[]>>
 
 /** Campos que toda respuesta incluye, sin importar el resultado. */
 type PaymentResponseBase = {
@@ -80,4 +82,5 @@ export type ErrorPaymentResponse = PaymentResponseBase &
  * Respuesta de la pasarela como unión discriminada por `status`:
  * al revisar `status`, TypeScript sabe qué campos existen y con qué tipo.
  */
-export type PaymentResponse = ApprovedPaymentResponse | RejectedPaymentResponse | ErrorPaymentResponse
+export type PaymentResponse =
+  ApprovedPaymentResponse | RejectedPaymentResponse | ErrorPaymentResponse

@@ -3,6 +3,7 @@ import { createApp } from './app'
 import { systemClock } from './config/clock'
 import { loadConfig, type Config } from './config/env'
 import { consoleLogger } from './lib/logger'
+import { InMemoryIdempotencyStore } from './repositories/idempotency.store'
 
 const logger = consoleLogger
 
@@ -15,13 +16,20 @@ function loadConfigOrExit(): Config {
   try {
     return loadConfig(process.env)
   } catch (error) {
-    logger.error('invalid_config', { message: error instanceof Error ? error.message : String(error) })
+    logger.error('invalid_config', {
+      message: error instanceof Error ? error.message : String(error),
+    })
     process.exit(1)
   }
 }
 
 const config = loadConfigOrExit()
-const app = createApp({ config, clock: systemClock, logger })
+const app = createApp({
+  config,
+  clock: systemClock,
+  logger,
+  idempotencyStore: new InMemoryIdempotencyStore(systemClock),
+})
 
 const server = app.listen(config.port, (error) => {
   if (error) {

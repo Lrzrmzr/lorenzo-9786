@@ -7,13 +7,16 @@ import type { Logger } from './lib/logger'
 import { errorHandler } from './middleware/error-handler'
 import { notFoundHandler } from './middleware/not-found'
 import { requestLogger } from './middleware/request-logger'
+import type { IdempotencyStore } from './repositories/idempotency.store'
 import { createHealthRouter } from './routes/health.routes'
+import { createPaymentsRouter } from './routes/payments.routes'
 
 /** Todo lo que la app necesita del exterior. Las pruebas pasan versiones controladas. */
 export type AppDependencies = {
   config: Config
   clock: Clock
   logger: Logger
+  idempotencyStore: IdempotencyStore
 }
 
 /**
@@ -22,7 +25,7 @@ export type AppDependencies = {
  *
  * El orden de los middlewares importa: cada petición los recorre de arriba hacia abajo.
  */
-export function createApp({ config, clock, logger }: AppDependencies): Express {
+export function createApp({ config, clock, logger, idempotencyStore }: AppDependencies): Express {
   const app = express()
 
   // 1. Encabezados de seguridad (y oculta `X-Powered-By: Express`).
@@ -36,6 +39,10 @@ export function createApp({ config, clock, logger }: AppDependencies): Express {
 
   // 5. Rutas.
   app.use('/api/health', createHealthRouter(clock))
+  app.use(
+    '/api/snailpay/payments',
+    createPaymentsRouter({ config: config.snailpay, clock, logger, idempotencyStore }),
+  )
 
   // 6. Nada coincidió: 404 en JSON.
   app.use(notFoundHandler)

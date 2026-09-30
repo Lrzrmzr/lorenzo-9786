@@ -38,7 +38,10 @@ export function errorHandler(logger: Logger): ErrorRequestHandler {
 
     if (hasBodyParserType(error, 'entity.too.large')) {
       const body: ApiErrorBody = {
-        error: { code: 'payload_too_large', message: 'El cuerpo de la petición es demasiado grande' },
+        error: {
+          code: 'payload_too_large',
+          message: 'El cuerpo de la petición es demasiado grande',
+        },
       }
       res.status(413).json(body)
       return

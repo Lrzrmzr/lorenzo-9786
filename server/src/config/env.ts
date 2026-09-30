@@ -24,16 +24,21 @@ const envSchema = z.object({
   SNAILPAY_FORCE_OUTAGE: z.stringbool().default(false),
   /** Retraso que aplica la tarjeta de timeout; debe superar el timeout del cliente. */
   SNAILPAY_TIMEOUT_DELAY_MS: z.coerce.number().int().min(0).max(60_000).default(15_000),
+  /** Cobros permitidos por minuto y por IP; frena abusos y reintentos en bucle. */
+  PAYMENT_RATE_LIMIT_PER_MINUTE: z.coerce.number().int().min(1).max(1_000).default(20),
 })
+
+export type SnailPayConfig = {
+  forceOutage: boolean
+  timeoutDelayMs: number
+  rateLimitPerMinute: number
+}
 
 export type Config = {
   nodeEnv: 'development' | 'test' | 'production'
   port: number
   clientOrigins: string[]
-  snailpay: {
-    forceOutage: boolean
-    timeoutDelayMs: number
-  }
+  snailpay: SnailPayConfig
 }
 
 /**
@@ -56,6 +61,7 @@ export function loadConfig(env: Record<string, string | undefined>): Config {
     snailpay: {
       forceOutage: vars.SNAILPAY_FORCE_OUTAGE,
       timeoutDelayMs: vars.SNAILPAY_TIMEOUT_DELAY_MS,
+      rateLimitPerMinute: vars.PAYMENT_RATE_LIMIT_PER_MINUTE,
     },
   }
 }
