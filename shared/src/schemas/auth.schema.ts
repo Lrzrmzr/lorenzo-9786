@@ -50,7 +50,10 @@ const passwordSchema = z
 
 /** Minúsculas y sin acentos, para que "López" y "lopez" se consideren iguales. */
 function normalizeForComparison(value: string): string {
-  return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
+  return value
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
 }
 
 /** Fragmentos personales que no deben aparecer dentro de la contraseña. */

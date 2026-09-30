@@ -13,12 +13,11 @@ export const TEST_CARDS = {
 
 export const PAYMENT_LIMITS = {
   /**
-   * Tope técnico del esquema: por encima la petición se considera mal formada (400).
-   * Es distinto del límite de negocio para que el rechazo `amount_exceeds_limit` sea alcanzable.
+   * Monto máximo por recarga. Es parte de la validación (400 con error en el campo),
+   * no una regla de rechazo: el ejercicio exige que la tarjeta de éxito apruebe
+   * cualquier cantidad válida, así que un monto aceptado nunca puede rechazarse por su tamaño.
    */
-  maxRequestAmount: 1_000_000,
-  /** Límite de negocio: por encima la pasarela rechaza la operación (201 `rejected`). */
-  maxApprovedAmount: 50_000,
+  maxAmount: 50_000,
 } as const
 
 /** Tiempo máximo que el cliente espera la respuesta de la pasarela antes de abortar. */

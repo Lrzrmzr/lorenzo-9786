@@ -34,24 +34,29 @@ const cardholderNameSchema = z
   .string()
   .trim()
   .min(1, 'Ingresa el nombre del titular')
-  .max(CARDHOLDER_NAME_MAX_LENGTH, `El nombre no puede tener más de ${CARDHOLDER_NAME_MAX_LENGTH} caracteres`)
+  .max(
+    CARDHOLDER_NAME_MAX_LENGTH,
+    `El nombre no puede tener más de ${CARDHOLDER_NAME_MAX_LENGTH} caracteres`,
+  )
 
-/**
- * El tope de este esquema es técnico. El límite de negocio (PAYMENT_LIMITS.maxApprovedAmount)
- * lo aplica la pasarela para devolver un rechazo `amount_exceeds_limit` en lugar de un 400.
- */
+const formattedMaxAmount = new Intl.NumberFormat('es-MX', {
+  style: 'currency',
+  currency: 'MXN',
+  maximumFractionDigits: 0,
+}).format(PAYMENT_LIMITS.maxAmount)
+
 const transactionAmountSchema = z
   .number('Ingresa un monto válido')
   .positive('El monto debe ser mayor que cero')
-  .max(PAYMENT_LIMITS.maxRequestAmount, 'El monto excede el máximo permitido')
+  .max(PAYMENT_LIMITS.maxAmount, `El monto máximo por recarga es ${formattedMaxAmount}`)
   .refine(hasAtMostTwoDecimals, 'El monto admite como máximo dos decimales')
 
 /**
  * Cuerpo de la petición de cobro. Usa snake_case igual que la respuesta,
  * para que todo el contrato HTTP tenga una sola convención de nombres.
  *
- * Solo valida formato. Las reglas de negocio (vencimiento, límites, tarjetas rechazadas)
- * las decide la pasarela, para que cada escenario sea reproducible desde la interfaz.
+ * Valida formato y límites de la petición. Las reglas de negocio (vencimiento, tarjetas
+ * rechazadas) las decide la pasarela, para que cada escenario sea reproducible desde la interfaz.
  */
 export const paymentRequestSchema = z.object({
   card_number: cardNumberSchema,

@@ -46,8 +46,8 @@ describe('paymentRequestSchema', () => {
     ['monto como texto', { transaction_amount: '100' }, 'transaction_amount'],
     ['monto no numérico', { transaction_amount: Number.NaN }, 'transaction_amount'],
     [
-      'monto sobre el tope técnico',
-      { transaction_amount: PAYMENT_LIMITS.maxRequestAmount + 1 },
+      'monto mayor al máximo por recarga',
+      { transaction_amount: PAYMENT_LIMITS.maxAmount + 0.01 },
       'transaction_amount',
     ],
     ['payer_id que no es UUID', { payer_id: '123' }, 'payer_id'],
@@ -57,9 +57,9 @@ describe('paymentRequestSchema', () => {
   })
 
   it.each([0.01, 10.1, 10.5, 99.99])('acepta el monto %s con hasta dos decimales', (amount) => {
-    expect(paymentRequestSchema.safeParse({ ...validPayment, transaction_amount: amount }).success).toBe(
-      true,
-    )
+    expect(
+      paymentRequestSchema.safeParse({ ...validPayment, transaction_amount: amount }).success,
+    ).toBe(true)
   })
 
   it('acepta un titular con cualquier carácter porque el ejercicio solo exige que no esté vacío', () => {
@@ -68,18 +68,22 @@ describe('paymentRequestSchema', () => {
     ).toBe(true)
   })
 
-  // Decisión de diseño: el límite de negocio no es una regla de formato.
-  // Si el esquema lo rechazara, la pasarela respondería 400 y el escenario
-  // `amount_exceeds_limit` nunca podría reproducirse.
-  it('deja pasar un monto mayor al límite de negocio para que lo rechace la pasarela', () => {
+  // Límite exacto: el máximo es válido; un centavo más ya no (ver la tabla de rechazos).
+  it('acepta exactamente el monto máximo por recarga', () => {
     const result = paymentRequestSchema.safeParse({
       ...validPayment,
-      transaction_amount: PAYMENT_LIMITS.maxApprovedAmount + 1,
+      transaction_amount: PAYMENT_LIMITS.maxAmount,
     })
     expect(result.success).toBe(true)
   })
 
-  // Misma decisión: el vencimiento lo evalúa la pasarela (`card_expired`).
+  it('explica el monto máximo en el mensaje de error', () => {
+    const result = paymentRequestSchema.safeParse({ ...validPayment, transaction_amount: 60_000 })
+    expect(result.error?.issues[0]?.message).toBe('El monto máximo por recarga es $50,000')
+  })
+
+  // Decisión de diseño: el vencimiento es una regla de negocio que evalúa la pasarela
+  // (`card_expired`); si el esquema la rechazara, ese escenario no sería reproducible.
   it('deja pasar una tarjeta vencida para que la rechace la pasarela', () => {
     const result = paymentRequestSchema.safeParse({ ...validPayment, expiration_date: '01/20' })
     expect(result.success).toBe(true)
