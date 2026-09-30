@@ -11,3 +11,10 @@
 - **Uso:** escritura de esquemas Zod, tipos del contrato, constantes y pruebas unitarias a partir de las reglas definidas en el plan.
 - **Mi aportación:** definición de las reglas de validación, revisión del código, ejecución de pruebas y verificación rompiendo reglas a propósito.
 - **Validación:** `typecheck` y `test` en verde; prueba de mutación manual cambiando la longitud mínima de contraseña.
+
+## -Configuración del backend
+- **Herramienta:** Claude Code
+- **Uso:** generación del servidor Express (`createApp` con inyección de dependencias, middlewares de seguridad, logger estructurado, manejador de errores central, validación de variables de entorno con Zod y configuración de build con tsup) y de sus pruebas con Vitest y Supertest.
+- **Mi aportación:** instalación de dependencias y aprobación de scripts de build (esbuild), creación de la estructura de carpetas, revisión del orden de la cadena de middlewares y de las decisiones de seguridad (no registrar el cuerpo de las peticiones, no exponer el detalle de errores al cliente).
+- **Ajuste conforme al avance del desarrollo:** se descartó un middleware genérico `validate(schema)` porque las respuestas de la pasarela deben incluir todos los campos del contrato incluso con datos inválidos; esa validación se hará en el controlador de pagos.
+- **Validación:** `typecheck` y pruebas en verde; prueba manual con `curl` a `/api/health` y a una ruta inexistente; build de producción ejecutado con `pnpm start`; prueba de mutación desactivando Helmet, que hizo fallar la prueba de encabezados de seguridad.
