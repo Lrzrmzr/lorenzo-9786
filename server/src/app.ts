@@ -10,6 +10,7 @@ import { requestLogger } from './middleware/request-logger'
 import type { IdempotencyStore } from './repositories/idempotency.store'
 import { createHealthRouter } from './routes/health.routes'
 import { createPaymentsRouter } from './routes/payments.routes'
+import { createRacesRouter } from './routes/races.routes'
 
 /** Todo lo que la app necesita del exterior. Las pruebas pasan versiones controladas. */
 export type AppDependencies = {
@@ -39,6 +40,7 @@ export function createApp({ config, clock, logger, idempotencyStore }: AppDepend
 
   // 5. Rutas.
   app.use('/api/health', createHealthRouter(clock))
+  app.use('/api/races', createRacesRouter(clock))
   app.use(
     '/api/snailpay/payments',
     createPaymentsRouter({ config: config.snailpay, clock, logger, idempotencyStore }),
