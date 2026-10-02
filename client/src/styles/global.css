@@ -1,0 +1,27 @@
+/* Montos, códigos y tarjetas: cifras de ancho fijo para que se alineen en columnas. */
+.sb-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sobretítulos en mayúsculas ("SALDO DISPONIBLE", "ERROR 404"). */
+.sb-overline {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Foco visible y consistente para navegación con teclado. */
+:focus-visible {
+  outline: 2px solid var(--mantine-color-moss-8);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
