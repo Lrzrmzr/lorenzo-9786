@@ -49,3 +49,17 @@
   - Se combinaron las dos versiones del diseño: la estructura, los estados, los textos y la accesibilidad de "Noche lima" con la identidad musgo y crema de la primera versión, en un solo tema claro. Motivo: se distingue más del estilo genérico de las herramientas de IA y reduce el alcance.
   - Se cambió Recharts de la versión 2 a la 3 porque la serie 2 está marcada como sin mantenimiento; la compatibilidad con Mantine se verificará al construir las gráficas.
 - **Validación:** `typecheck` y `test` en verde; revisión en el navegador de la navegación entre páginas, la página 404 en escritorio y móvil, y el proxy `/api/health` a través de Vite.
+
+## 6 - Frontend y sistema de diseño
+
+- **Herramientas:** Claude Code 
+- **Uso:** 
+  - especificación en pruebas del hash de contraseñas y del reducer de sesión (TDD); utilidades de almacenamiento validado y codificación; repositorios de usuarios, sesión e intentos de inicio de sesión; servicio de autenticación con sus pruebas; Provider, hook `useAuth`, rutas protegidas y pantallas de inicio de sesión y registro con indicador de fuerza de contraseña.
+- **Mi aportación:** 
+  - Implementación de `password.service.ts` (PBKDF2-SHA256 con Web Crypto, sal aleatoria, iteraciones guardadas y comparación en tiempo constante) y de `auth-reducer.ts` (máquina de estados de la sesión, con `switch` exhaustivo mediante `never`), ambos guiados por las pruebas.
+  - Las pruebas detectaron dos errores en mi primera versión, que corregí: lanzar un error (`throw false`) en lugar de devolver `false` ante un algoritmo desconocido, y el tipo de la sal, incompatible con Web Crypto.
+  - Revisión del flujo completo en el navegador.
+- **Ajuste conforme al avance del desarrollo:**
+  - Los formularios pasaron a ser generados con IA para concentrar mi trabajo en las piezas de seguridad y estado, que son las que más requieren explicación.
+  - Se agregó un setup de pruebas porque el entorno jsdom no incluye `crypto.subtle`.
+- **Validación:** `typecheck` y `test` en verde; flujo mínimo del enunciado en el navegador (registro, saldo inicial de $0, persistencia al recargar, cierre de sesión, redirección sin sesión e inicio de sesión de nuevo); bloqueo tras 5 intentos fallidos; correo duplicado; revisión en localStorage de que solo se guarda el hash; prueba de mutación en la expiración de la sesión, que hizo fallar la prueba de las 24 horas.

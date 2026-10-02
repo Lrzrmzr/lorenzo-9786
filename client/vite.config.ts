@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
@@ -11,5 +12,10 @@ export default defineConfig({
     proxy: {
       '/api': { target: API_TARGET, changeOrigin: true },
     },
+  },
+  test: {
+    // jsdom simula el navegador (localStorage, DOM); el setup agrega Web Crypto completo.
+    environment: 'jsdom',
+    setupFiles: ['./vitest.setup.ts'],
   },
 })
