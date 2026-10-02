@@ -1,21 +1,23 @@
-import { Anchor, Center, Paper, Stack, Text, Title } from '@mantine/core'
+import { Anchor, Text } from '@mantine/core'
 import { Link } from 'react-router'
-import { Logo } from '../../../components/brand/Logo'
+import { AuthLayout } from '../components/AuthLayout'
+import { RegisterForm } from '../components/RegisterForm'
 
-/** Temporal: el formulario de registro se implementa con la autenticación. */
 export function RegisterPage() {
   return (
-    <Center mih="100vh" p="md">
-      <Paper p="xl" w={400} maw="100%">
-        <Stack gap="md">
-          <Logo />
-          <Title order={2}>Crear cuenta</Title>
-          <Text c="dimmed">Formulario próximamente.</Text>
-          <Anchor component={Link} to="/login">
-            ¿Ya tienes cuenta? Inicia sesión
+    <AuthLayout
+      title="Crea tu cuenta"
+      subtitle="Empiezas con saldo de $0.00 y recargas cuando quieras."
+      footer={
+        <Text ta="center" c="dimmed">
+          ¿Ya tienes cuenta?{' '}
+          <Anchor component={Link} to="/login" fw={700}>
+            Inicia sesión
           </Anchor>
-        </Stack>
-      </Paper>
-    </Center>
+        </Text>
+      }
+    >
+      <RegisterForm />
+    </AuthLayout>
   )
 }
