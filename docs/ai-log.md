@@ -50,7 +50,7 @@
   - Se cambió Recharts de la versión 2 a la 3 porque la serie 2 está marcada como sin mantenimiento; la compatibilidad con Mantine se verificará al construir las gráficas.
 - **Validación:** `typecheck` y `test` en verde; revisión en el navegador de la navegación entre páginas, la página 404 en escritorio y móvil, y el proxy `/api/health` a través de Vite.
 
-## 6 - Frontend y sistema de diseño
+## 7 - Autenticación
 
 - **Herramientas:** Claude Code 
 - **Uso:** 
@@ -63,3 +63,20 @@
   - Los formularios pasaron a ser generados con IA para concentrar mi trabajo en las piezas de seguridad y estado, que son las que más requieren explicación.
   - Se agregó un setup de pruebas porque el entorno jsdom no incluye `crypto.subtle`.
 - **Validación:** `typecheck` y `test` en verde; flujo mínimo del enunciado en el navegador (registro, saldo inicial de $0, persistencia al recargar, cierre de sesión, redirección sin sesión e inicio de sesión de nuevo); bloqueo tras 5 intentos fallidos; correo duplicado; revisión en localStorage de que solo se guarda el hash; prueba de mutación en la expiración de la sesión, que hizo fallar la prueba de las 24 horas.
+
+## 8 - Dashboard
+
+- **Herramientas:** Claude Code 
+- **Uso:** 
+  - `fetchWithTimeout` con AbortController (distingue la cancelación por tiempo de la cancelación de quien llama, para reutilizarlo en los pagos), utilidades de fechas en español y transformaciones puras de los datos de carreras a las gráficas, todo con pruebas.
+  - Hook `useDailyRaces` con estados de carga, error y éxito como unión discriminada, cancelación al desmontar y reintento.
+  - Componentes presentacionales: encabezado con confirmación de cierre de sesión, tarjeta de saldo, dona de apuestas y barras de victorias con el color fijo de cada caracol.
+- **Mi aportación:** 
+  -revisión del diseño en el navegador en escritorio y móvil, comparación de las gráficas contra la respuesta del endpoint, revisión de los estados de saldo en cero, carga y error, y validación del UI definida conforme al brief.
+- **Ajuste conforme al avance del desarrollo:**
+   - Se confirmó que Recharts 3 funciona con las gráficas de Mantine: cada barra toma el color que trae su dato.
+  - En móvil las barras se muestran horizontales, porque los nombres de los 6 caracoles no caben bajo barras verticales.
+  - Si hay empate en el primer lugar no se muestra la insignia de favorito, porque destacar a uno solo sería engañoso.
+  - Ante un error se muestra una sola tarjeta con "Reintentar" en lugar de una por gráfica; el saldo sigue visible.
+  - El botón "Recargar con SnailPay" queda deshabilitado hasta la integración de pagos.
+- **Validación:** `typecheck` y `test` en verde; Una prueba de `fetchWithTimeout` se quedó colgada porque el mock no rechazaba cuando la señal ya venía cancelada (un `fetch` real sí lo hace); se corrigió el mock, el código estaba bien. Revisión manual del estado de error deteniendo el servidor y del reintento al levantarlo. Prueba de mutación en el cálculo de porcentajes, que hizo fallar la prueba de suma 100.
