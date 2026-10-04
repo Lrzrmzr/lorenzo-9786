@@ -52,10 +52,10 @@
 
 ## 7 - Autenticación
 
-- **Herramientas:** Claude Code 
-- **Uso:** 
+- **Herramientas:** Claude Code
+- **Uso:**
   - especificación en pruebas del hash de contraseñas y del reducer de sesión (TDD); utilidades de almacenamiento validado y codificación; repositorios de usuarios, sesión e intentos de inicio de sesión; servicio de autenticación con sus pruebas; Provider, hook `useAuth`, rutas protegidas y pantallas de inicio de sesión y registro con indicador de fuerza de contraseña.
-- **Mi aportación:** 
+- **Mi aportación:**
   - Implementación de `password.service.ts` (PBKDF2-SHA256 con Web Crypto, sal aleatoria, iteraciones guardadas y comparación en tiempo constante) y de `auth-reducer.ts` (máquina de estados de la sesión, con `switch` exhaustivo mediante `never`), ambos guiados por las pruebas.
   - Las pruebas detectaron dos errores en mi primera versión, que corregí: lanzar un error (`throw false`) en lugar de devolver `false` ante un algoritmo desconocido, y el tipo de la sal, incompatible con Web Crypto.
   - Revisión del flujo completo en el navegador.
@@ -66,17 +66,34 @@
 
 ## 8 - Dashboard
 
-- **Herramientas:** Claude Code 
-- **Uso:** 
+- **Herramientas:** Claude Code
+- **Uso:**
   - `fetchWithTimeout` con AbortController (distingue la cancelación por tiempo de la cancelación de quien llama, para reutilizarlo en los pagos), utilidades de fechas en español y transformaciones puras de los datos de carreras a las gráficas, todo con pruebas.
   - Hook `useDailyRaces` con estados de carga, error y éxito como unión discriminada, cancelación al desmontar y reintento.
   - Componentes presentacionales: encabezado con confirmación de cierre de sesión, tarjeta de saldo, dona de apuestas y barras de victorias con el color fijo de cada caracol.
-- **Mi aportación:** 
+- **Mi aportación:**
   -revisión del diseño en el navegador en escritorio y móvil, comparación de las gráficas contra la respuesta del endpoint, revisión de los estados de saldo en cero, carga y error, y validación del UI definida conforme al brief.
 - **Ajuste conforme al avance del desarrollo:**
-   - Se confirmó que Recharts 3 funciona con las gráficas de Mantine: cada barra toma el color que trae su dato.
+  - Se confirmó que Recharts 3 funciona con las gráficas de Mantine: cada barra toma el color que trae su dato.
   - En móvil las barras se muestran horizontales, porque los nombres de los 6 caracoles no caben bajo barras verticales.
   - Si hay empate en el primer lugar no se muestra la insignia de favorito, porque destacar a uno solo sería engañoso.
   - Ante un error se muestra una sola tarjeta con "Reintentar" en lugar de una por gráfica; el saldo sigue visible.
   - El botón "Recargar con SnailPay" queda deshabilitado hasta la integración de pagos.
 - **Validación:** `typecheck` y `test` en verde; Una prueba de `fetchWithTimeout` se quedó colgada porque el mock no rechazaba cuando la señal ya venía cancelada (un `fetch` real sí lo hace); se corrigió el mock, el código estaba bien. Revisión manual del estado de error deteniendo el servidor y del reintento al levantarlo. Prueba de mutación en el cálculo de porcentajes, que hizo fallar la prueba de suma 100.
+
+## 9 - Integración con SnailPay
+
+- **Herramientas:** Claude Code
+- **Uso:**
+  - Adapter `snailpay.client.ts`, que traduce cada respuesta HTTP a una unión discriminada (`approved`, `rejected`, `invalid`, `idempotency_conflict`, `unavailable`, `rate_limited`, `timeout`, `network_error`), con validación Zod de la respuesta antes de acreditar saldo.
+  - Repositorio del historial de pagos y servicio de acreditación (una sola vez por `id`, en centavos, leyendo el saldo del almacenamiento).
+  - Máscaras de tarjeta, vencimiento y CVV; modal de recarga con sus estados, errores por campo del 400 y tarjetas de prueba.
+  - Pruebas escritas antes que mis piezas (TDD).
+- **Mi aportación:**
+  - Implementación de `useTopUp` (llave de idempotencia en `useRef`, protección contra doble envío, registro en el historial, acreditación y `switch` exhaustivo), de `shouldReuseIdempotencyKey` y del diccionario de mensajes al usuario.
+  - La revisión detectó errores en mi primera versión, que corregí: imports equivocados por errores de sintaxis, acceso a `user` sin revisar el estado de la sesión, `result.kind` en el caso `never` y dos mensajes que inducían a error (el conflicto de llave decía que el pago ya se había procesado, y el de pago aprobado sin saldo invitaba a reintentar, lo que habría generado un segundo cobro).
+- **Ajuste conforme al avance del desarrollo:**
+  - Se agregó el resultado `rate_limited` (429), que no estaba en el plan, para no mostrarlo como un error genérico.
+  - Se agregó `retryable` al estado de error: un pago aprobado cuyo saldo no se pudo guardar no muestra "Reintentar".
+  - Cerrar el modal termina el intento: la llave se descarta.
+- **Validación:** `typecheck`, `lint` y `test` en verde. En el navegador: cobro exitoso con saldo actualizado al instante y persistente al recargar, cada rechazo con su mensaje y sin cambio de saldo, error del sistema, caída forzada por entorno, timeout con reintento usando la misma llave (verificado en Network), llave nueva tras una aprobación, doble clic con una sola petición, historial en localStorage y modal en móvil.
