@@ -50,11 +50,15 @@ export function AuthProvider({ children, service = defaultAuthService }: AuthPro
     dispatch({ type: 'logged_out' })
   }, [service])
 
+  const updateBalance = useCallback((balanceCents: number) => {
+    dispatch({ type: 'balance_updated', balanceCents })
+  }, [])
+
   // useMemo evita crear un objeto nuevo en cada render, lo que haría
   // volver a renderizar a todos los componentes que usan el contexto.
   const value = useMemo<AuthContextValue>(
-    () => ({ state, register, login, logout }),
-    [state, register, login, logout],
+    () => ({ state, register, login, logout, updateBalance }),
+    [state, register, login, logout, updateBalance],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

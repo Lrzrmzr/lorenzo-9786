@@ -5,7 +5,7 @@ import { formatMoney } from '../../../lib/money'
 
 type BalanceCardProps = {
   balanceCents: number
-  /** Sin esta función el botón aparece deshabilitado (la recarga llega en la Fase 9). */
+  /** Sin esta función el botón aparece deshabilitado. */
   onTopUp?: () => void
 }
 
