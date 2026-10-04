@@ -97,3 +97,19 @@
   - Se agregó `retryable` al estado de error: un pago aprobado cuyo saldo no se pudo guardar no muestra "Reintentar".
   - Cerrar el modal termina el intento: la llave se descarta.
 - **Validación:** `typecheck`, `lint` y `test` en verde. En el navegador: cobro exitoso con saldo actualizado al instante y persistente al recargar, cada rechazo con su mensaje y sin cambio de saldo, error del sistema, caída forzada por entorno, timeout con reintento usando la misma llave (verificado en Network), llave nueva tras una aprobación, doble clic con una sola petición, historial en localStorage y modal en móvil.
+
+## 10 - Pruebas automatizadas
+
+- **Herramienta:** Claude Code
+- **Uso:**
+  - Auditoría de la cobertura contra el plan: las pruebas unitarias y de API ya se habían escrito en cada fase, así que esta fase se concentró en el E2E y el CI.
+  - Configuración de Playwright (levanta servidor y cliente con `webServer`, con el rate limit ampliado para la suite), `tsconfig` de las pruebas E2E, exclusión de `e2e/` en Vitest, scripts `test:e2e` y workflow de GitHub Actions (calidad y E2E).
+  - Región accesible "Saldo disponible" en la tarjeta de saldo, que también sirve como selector estable para las pruebas.
+  - Borrador de las pruebas E2E y corrección de selectores.
+- **Mi aportación:**
+  - Escritura de las pruebas E2E de autenticación y recarga, incluida la de timeout con reloj falso (`page.clock`) y `page.route()`, que verifica que el reintento reutiliza el mismo `Idempotency-Key`.
+  - Diagnóstico con el modo UI y los snapshots de `error-context.md`. La primera ejecución falló por textos que no coincidían con la interfaz y por un selector sugerido por la IA que no funcionaba: `getByLabel` con `exact` compara contra el texto de la etiqueta, que incluye el asterisco de campo obligatorio. Se resolvió buscando por rol y nombre accesible.
+- **Ajuste conforme al avance del desarrollo:**
+  - Se instaló `@playwright/test` directamente en lugar del asistente `create playwright`, para no generar ejemplos que luego habría que borrar.
+  - Se eliminó una referencia de tipos de Vitest en `vite.config.ts` que el lint marcaba como redundante.
+- **Validación:** `typecheck`, `lint`, Vitest y las 11 pruebas E2E en verde. Pruebas de mutación: con la llave descartada siempre falló la prueba de timeout, y con la resta en lugar de la suma falló la de recarga aprobada.
