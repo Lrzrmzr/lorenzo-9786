@@ -14,7 +14,13 @@ export function BalanceCard({ balanceCents, onTopUp }: BalanceCardProps) {
   const isEmpty = balanceCents === 0
 
   return (
-    <Paper bg="moss.7" p={{ base: 'lg', sm: 'xl' }} withBorder={false}>
+    <Paper
+      component="section"
+      aria-label="Saldo disponible"
+      bg="moss.7"
+      p={{ base: 'lg', sm: 'xl' }}
+      withBorder={false}
+    >
       <Group justify="space-between" align="flex-end" gap="lg">
         <Stack gap={4}>
           <Text className="sb-overline" c="moss.1">
