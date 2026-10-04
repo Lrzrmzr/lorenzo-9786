@@ -1,6 +1,8 @@
 import { AppShell, Container, SimpleGrid, Stack, Text, Title } from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
 import { formatLongDate } from '../../../lib/dates'
 import { useAuth } from '../../auth/hooks/useAuth'
+import { TopUpModal } from '../../payments/components/TopUpModal'
 import { BalanceCard } from '../components/BalanceCard'
 import { BetsDonutChart, BetsDonutChartSkeleton } from '../components/BetsDonutChart'
 import { ChartsError } from '../components/ChartCard'
@@ -47,6 +49,7 @@ function RaceCharts({ state, onRetry }: { state: DailyRacesState; onRetry: () =>
 export function DashboardPage() {
   const { state, logout } = useAuth()
   const races = useDailyRaces()
+  const [topUpOpened, topUp] = useDisclosure(false)
 
   // ProtectedRoute garantiza la sesión; la comprobación es para que TypeScript lo sepa.
   if (state.status !== 'authenticated') {
@@ -71,11 +74,13 @@ export function DashboardPage() {
               </Title>
               <Text c="dimmed">{formatLongDate(new Date())}</Text>
             </Stack>
-            <BalanceCard balanceCents={user.balanceCents} />
+            <BalanceCard balanceCents={user.balanceCents} onTopUp={topUp.open} />
             <RaceCharts state={races.state} onRetry={races.retry} />
           </Stack>
         </Container>
       </AppShell.Main>
+
+      <TopUpModal opened={topUpOpened} onClose={topUp.close} />
     </AppShell>
   )
 }
