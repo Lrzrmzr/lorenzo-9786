@@ -7,7 +7,7 @@ const DATES = Array.from({ length: 30 }, (_, index) =>
   new Date(Date.UTC(2026, 8, 1 + index)).toISOString().slice(0, 10),
 )
 
-describe('generateDailyRaceSummary: reglas del enunciado', () => {
+describe('generateDailyRaceSummary: reglas de congruencia', () => {
   const summary = generateDailyRaceSummary('2026-09-29')
 
   it('tiene 6 caracoles con nombre y color', () => {

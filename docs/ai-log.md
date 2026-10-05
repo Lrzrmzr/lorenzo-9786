@@ -34,7 +34,7 @@
 
 - **Herramienta:** Claude Code
 - **Uso:** generación del generador pseudoaleatorio con semilla, el catálogo de caracoles, el servicio que produce las 6 carreras y las apuestas simuladas, el endpoint `GET /api/races/daily-summary` y sus pruebas.
-- **Mi aportación:** revisión de las reglas de congruencia contra el enunciado, verificación manual de la respuesta del endpoint (victorias por caracol, resultado de cada apuesta contra el ganador de su carrera y totales) y revisión del comportamiento de fechas en UTC.
+- **Mi aportación:** revisión de las reglas de congruencia contra los requisitos, verificación manual de la respuesta del endpoint (victorias por caracol, resultado de cada apuesta contra el ganador de su carrera y totales) y revisión del comportamiento de fechas en UTC.
 - **Ajuste conforme al avance del desarrollo:** el endpoint devuelve la jornada del día anterior en lugar del día en curso, para que las 6 carreras ya hayan ocurrido; por eso la ruta se llama `daily-summary` en lugar de `today`.
 - **Validación:** `typecheck` y `test` en verde (congruencia verificada en 30 fechas distintas); dos llamadas al endpoint con resultados idénticos; prueba de mutación forzando todas las apuestas como ganadas, que hizo fallar las pruebas de congruencia en las 30 fechas.
 
@@ -62,7 +62,7 @@
 - **Ajuste conforme al avance del desarrollo:**
   - Los formularios pasaron a ser generados con IA para concentrar mi trabajo en las piezas de seguridad y estado, que son las que más requieren explicación.
   - Se agregó un setup de pruebas porque el entorno jsdom no incluye `crypto.subtle`.
-- **Validación:** `typecheck` y `test` en verde; flujo mínimo del enunciado en el navegador (registro, saldo inicial de $0, persistencia al recargar, cierre de sesión, redirección sin sesión e inicio de sesión de nuevo); bloqueo tras 5 intentos fallidos; correo duplicado; revisión en localStorage de que solo se guarda el hash; prueba de mutación en la expiración de la sesión, que hizo fallar la prueba de las 24 horas.
+- **Validación:** `typecheck` y `test` en verde; flujo mínimo requerido en el navegador (registro, saldo inicial de $0, persistencia al recargar, cierre de sesión, redirección sin sesión e inicio de sesión de nuevo); bloqueo tras 5 intentos fallidos; correo duplicado; revisión en localStorage de que solo se guarda el hash; prueba de mutación en la expiración de la sesión, que hizo fallar la prueba de las 24 horas.
 
 ## 8 - Dashboard
 
@@ -113,3 +113,17 @@
   - Se instaló `@playwright/test` directamente en lugar del asistente `create playwright`, para no generar ejemplos que luego habría que borrar.
   - Se eliminó una referencia de tipos de Vitest en `vite.config.ts` que el lint marcaba como redundante.
 - **Validación:** `typecheck`, `lint`, Vitest y las 11 pruebas E2E en verde. Pruebas de mutación: con la llave descartada siempre falló la prueba de timeout, y con la resta en lugar de la suma falló la de recarga aprobada.
+
+## 11 - Documentación y revisión final
+
+- **Herramienta:** Claude Code
+- **Uso:**
+  - Borrador del README: instalación, variables de entorno, pruebas, escenarios de SnailPay, idempotencia, arquitectura, patrones, estructura y limitaciones conocidas.
+  - Búsqueda de referencias en archivos e historial; reemplazo de términos genéricos que delataban el contexto del proyecto.
+  - Auditoría de los comentarios que explican decisiones y cálculo del contraste WCAG de las combinaciones de color principales.
+- **Mi aportación:** verificación en limpio siguiendo el README paso a paso (instalación con lockfile congelado, build, pruebas unitarias, de API y E2E), revisión de navegación con teclado y revisión de la redacción del README.
+- **Ajuste conforme al avance del desarrollo:**
+  - Dos insignias en ámbar no cumplían el contraste AA para texto pequeño (2.72:1 y 3.94:1); se oscurecieron a 5.80:1.
+  - El README documenta la variable de caída total con la sintaxis de bash y de PowerShell, además del archivo `.env`.
+  - No se reescribió el historial de Git: solo contenía términos genéricos, sin referencias a la empresa.
+- **Validación:** `typecheck`, `lint`, `test` y `test:e2e` en verde tras una instalación en limpio con `pnpm install --frozen-lockfile`; `pnpm build` sin errores; navegación con teclado revisada en las tres pantallas.

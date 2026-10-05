@@ -11,7 +11,7 @@ export type StoredPayment = {
   /** `true` cuando el monto ya se sumó al saldo: evita acreditar dos veces el mismo `id`. */
   credited: boolean
   /**
-   * Respuesta completa, incluidos tarjeta y CVV por requisito del ejercicio.
+   * Respuesta completa, incluidos tarjeta y CVV por requisito del proyecto.
    * En la interfaz siempre se muestran enmascarados.
    */
   response: PaymentResponse

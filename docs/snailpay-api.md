@@ -21,15 +21,15 @@ Idempotency-Key: <UUID v4>
 
 Todo el contrato usa `snake_case`.
 
-| Campo                | Tipo   | Reglas                                                                                                                                                   |
-| -------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `card_number`        | string | 16 dígitos. Se aceptan espacios o guiones entre grupos y se eliminan. No se valida el algoritmo de Luhn (la tarjeta de éxito del ejercicio no lo cumple) |
-| `expiration_date`    | string | Formato `MM/AA`, mes entre 01 y 12                                                                                                                       |
-| `security_code`      | string | 3 dígitos                                                                                                                                                |
-| `cardholder_name`    | string | No vacío, máximo 80 caracteres                                                                                                                           |
-| `transaction_amount` | number | Mayor que 0, máximo 2 decimales, máximo **$50,000** por recarga                                                                                          |
-| `payer_id`           | string | UUID del usuario registrado                                                                                                                              |
-| `payer_email`        | string | Correo del usuario registrado                                                                                                                            |
+| Campo                | Tipo   | Reglas                                                                                                                                               |
+| -------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `card_number`        | string | 16 dígitos. Se aceptan espacios o guiones entre grupos y se eliminan. No se valida el algoritmo de Luhn (la tarjeta de éxito requerida no lo cumple) |
+| `expiration_date`    | string | Formato `MM/AA`, mes entre 01 y 12                                                                                                                   |
+| `security_code`      | string | 3 dígitos                                                                                                                                            |
+| `cardholder_name`    | string | No vacío, máximo 80 caracteres                                                                                                                       |
+| `transaction_amount` | number | Mayor que 0, máximo 2 decimales, máximo **$50,000** por recarga                                                                                      |
+| `payer_id`           | string | UUID del usuario registrado                                                                                                                          |
+| `payer_email`        | string | Correo del usuario registrado                                                                                                                        |
 
 Ejemplo:
 
@@ -60,8 +60,8 @@ Todas las respuestas (aprobadas, rechazadas y errores del sistema) incluyen los 
 | `reference`          | `SNP-AAAAMMDD-XXXX`                 | Referencia legible de la operación                                                       |
 | `payer_id`           | string \| null                      | Identificador del usuario                                                                |
 | `payer_email`        | string \| null                      | Correo del usuario                                                                       |
-| `card_number`        | string \| null                      | Número de tarjeta (ficticio, incluido por requisito del ejercicio)                       |
-| `security_code`      | string \| null                      | CVV (ficticio, incluido por requisito del ejercicio)                                     |
+| `card_number`        | string \| null                      | Número de tarjeta (ficticio, incluido por requisito del proyecto)                        |
+| `security_code`      | string \| null                      | CVV (ficticio, incluido por requisito del proyecto)                                      |
 | `errors`             | objeto                              | Solo con `invalid_request`: mensajes por campo                                           |
 
 Ejemplo aprobado:
@@ -203,4 +203,4 @@ SNAILPAY_FORCE_OUTAGE=true pnpm --filter @snailbet/server dev
 
 - Los logs del servidor nunca incluyen el cuerpo de las peticiones: el número de tarjeta y el CVV no se registran.
 - La huella de idempotencia es un hash SHA-256 de la petición, no una copia de sus datos.
-- Incluir la tarjeta y el CVV en la respuesta y guardarlos en el navegador es un **requisito del ejercicio**. En una integración real está prohibido por PCI DSS: el CVV nunca se almacena y la tarjeta se reemplaza por un token de la pasarela.
+- Incluir la tarjeta y el CVV en la respuesta y guardarlos en el navegador es un **requisito del proyecto**. En una integración real está prohibido por PCI DSS: el CVV nunca se almacena y la tarjeta se reemplaza por un token de la pasarela.

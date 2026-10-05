@@ -42,7 +42,7 @@ type PaymentResponseBase = {
 /**
  * Datos del pagador y de la tarjeta. En una operación no aprobada pueden ser `null`
  * cuando la petición llegó incompleta o mal formada.
- * La tarjeta y el CVV se devuelven por requisito del ejercicio; siempre son ficticios.
+ * La tarjeta y el CVV se devuelven por requisito del proyecto; siempre son ficticios.
  */
 type NullablePaymentEcho = {
   transaction_amount: number | null

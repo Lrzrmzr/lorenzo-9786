@@ -37,7 +37,7 @@ export function TopUpModal({ opened, onClose }: TopUpModalProps) {
           <Text ff="heading" fw={600} fz="xl">
             Recargar saldo
           </Text>
-          <Badge color="amber.7" variant="light" size="sm">
+          <Badge color="amber.8" variant="light" size="sm">
             SnailPay · pasarela simulada
           </Badge>
         </Group>

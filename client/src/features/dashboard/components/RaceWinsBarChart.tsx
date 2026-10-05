@@ -32,7 +32,7 @@ export function RaceWinsBarChart({ data, date, raceCount, favorite }: RaceWinsBa
       subtitle={`Jornada del ${formatDayMonth(date)} · ${raceCount} carreras`}
       aside={
         favorite && (
-          <Badge color="amber.6" variant="light" leftSection={<IconTrophy size={14} />}>
+          <Badge color="amber.8" variant="light" leftSection={<IconTrophy size={14} />}>
             Favorito: {favorite.snail}
           </Badge>
         )

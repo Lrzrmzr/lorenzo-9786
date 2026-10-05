@@ -11,7 +11,7 @@ function hasAtMostTwoDecimals(value: number): boolean {
 
 /**
  * Solo valida el formato de la tarjeta, no el algoritmo de Luhn:
- * la tarjeta de éxito que exige el ejercicio (1234123412341234) no lo cumple.
+ * la tarjeta de éxito que exigen los requisitos (1234123412341234) no lo cumple.
  * Acepta espacios o guiones entre grupos y los elimina.
  */
 const cardNumberSchema = z
@@ -29,7 +29,7 @@ const securityCodeSchema = z
   .trim()
   .regex(/^\d{3}$/, 'El CVV debe tener 3 dígitos')
 
-/** El ejercicio pide aceptar cualquier nombre no vacío, por eso no se restringen caracteres. */
+/** Los requisitos piden aceptar cualquier nombre no vacío, por eso no se restringen caracteres. */
 const cardholderNameSchema = z
   .string()
   .trim()
