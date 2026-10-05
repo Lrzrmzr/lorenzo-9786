@@ -62,7 +62,7 @@ describe('paymentRequestSchema', () => {
     ).toBe(true)
   })
 
-  it('acepta un titular con cualquier carácter porque el ejercicio solo exige que no esté vacío', () => {
+  it('acepta un titular con cualquier carácter porque los requisitos solo exigen que no esté vacío', () => {
     expect(
       paymentRequestSchema.safeParse({ ...validPayment, cardholder_name: 'Titular 123' }).success,
     ).toBe(true)

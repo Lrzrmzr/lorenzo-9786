@@ -19,7 +19,7 @@ const request: PaymentRequest = {
   payer_email: 'ana.lopez@example.com',
 }
 
-/** Campos que exige el contrato, en el orden de la tabla del ejercicio, más la tarjeta y el CVV. */
+/** Campos que exige el contrato, en el orden de la tabla de campos, más la tarjeta y el CVV. */
 const CONTRACT_FIELDS = [
   'id',
   'status',
