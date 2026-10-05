@@ -1,6 +1,6 @@
-/// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { configDefaults } from 'vitest/config'
 
 const API_TARGET = 'http://localhost:3001'
 
@@ -17,5 +17,7 @@ export default defineConfig({
     // jsdom simula el navegador (localStorage, DOM); el setup agrega Web Crypto completo.
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
+    // Las pruebas de Playwright (e2e/*.spec.ts) las ejecuta Playwright, no Vitest.
+    exclude: [...configDefaults.exclude, 'e2e/**'],
   },
 })
